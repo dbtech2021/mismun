@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "flood levee",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Name": "คันป้องกันน้ำท่วมกรมโยธา-จุดเริ่มต้น", "description": null, "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": 0, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ 103.288216, 15.298788, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "คันป้องกันน้ำท่วมกรมโยธา-จุดสิ้นสุด", "description": null, "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": 0, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ 103.297705, 15.305453, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "คันป้องกันน้ำท่วมกรมโยธา-จุดเริ่มต้น", "description": null, "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": 0, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ 104.830326, 15.205964, 0.0 ] } },
+{ "type": "Feature", "properties": { "Name": "คันป้องกันน้ำท่วมกรมโยธา-จุดสิ้นสุด", "description": null, "timestamp": null, "begin": null, "end": null, "altitudeMode": null, "tessellate": -1, "extrude": 0, "visibility": -1, "drawOrder": null, "icon": null }, "geometry": { "type": "Point", "coordinates": [ 104.873346, 15.224284, 0.0 ] } }
+]
+}

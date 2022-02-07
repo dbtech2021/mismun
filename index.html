@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+
+	<!-- Bootstrap CDN -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css" integrity="sha384-6pzBo3FDv/PJ8r2KRkGHifhEocL+1X2rVCTTkUfGk7/0pbek5mMa1upzvWbrUbOZ" crossorigin="anonymous">
+
+
+	<!------------------->
+
+	<!-- FONT GOOGLE -->
+	
+	<!------------------->
+
+	<!-- สร้างแผนที่ leaflet CSS -->
+	<script src="https://unpkg.com/leaflet-highlightable-layers"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+	<!-- สร้างแผนที่ leaflet JS -->
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+	<script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js'></script>
+	<!---------------------------------------------------------------------------------------->
+
+	<!-- ทำงานร่วมกับ topojson -->
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+	<!-- Jquery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- ไอคอลฟอนต์ -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!---------------------------------------------------------------------------------------->
+
+	<!-- CSS CUSTOM -->
+	<link rel="stylesheet" type="text/css" href="./style/main.css">
+	<link rel="stylesheet" type="text/css" href="./style/custom_ui.css">
+	<link rel="stylesheet" type="text/css" href="./style/checkbox.css">
+	<link rel="stylesheet" type="text/css" href="./style/accordion.css">
+	<!---------------------------------------------------------------------------------------->
+</head>
+<body>
+
+	<!-- ส่วนเมนูนำทาง -->
+	<nav class="navbar navbar-default navbar-static-top" style="background: #0b2b4c;" contextmenu="supermenu">
+	  	<ul class="nav navbar-nav">
+        	<li class="active" style="color: #fff;"><img src="https://waterchartmis.onwr.go.th/mismun/img/logo-onwr-resize2.png"> สนทช.</li>
+        	<li><a href="#" style="color: #fff;"> ระบบสารสนเทศเพื่อการจัดการ โครงการจัดทำผังน้ำ ลุ่มน้ำมูล</a></li>
+        	
+    	</ul>
+    	<div class="menu-innernav">
+        		<div>
+        			<div>
+	        			<img src="./img/google_earth_icon52.png">
+	        		</div>
+        			<div>
+	        			<img src="./img/map.png">
+	        		</div>
+	        		<div>
+	        			<img src="./img/web_icon.png">
+	        		</div>
+	        		<div id="slcTop">
+	        			<img src="./img/basemap_button_48x48.png">
+	        		</div>
+        		</div>
+        	</div>
+	</nav>
+
+	<div class="slc-map">
+		<div>
+			<img src="./img/map/12.png" width="100px" onclick="slcMap(this,'https://tile.openstreetmap.org/{z}/{x}/{y}.png')" class="imgSlc" style="border:1px solid #5e81ad;">
+			<label>Open Street Map</label>
+  		</div>
+		<div>
+			<img src="./img/map/2.png" width="100px" onclick="slcMap(this,'https://stamen-tiles.a.ssl.fastly.net/toner/{z}/{x}/{y}.png')" class="imgSlc">
+			<label>Toner BW</label>
+		</div>
+		<div>
+			<img src="./img/map/3.png" width="100px" onclick="slcMap(this,'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg')" class="imgSlc">
+			<label>Terrain</label>
+		</div>
+		<div>
+			<img src="./img/map/4.png" width="100px" onclick="slcMap(this,'http://go-tiles1.gistda.or.th/mapproxy/wmts/thaichote/GLOBAL_WEBMERCATOR/{z}/{x}/{y}.png')" class="imgSlc">
+			<label>ดาวเทียมไทยโชต</label>
+		</div>
+		<div>
+			<img src="./img/map/5.png" width="100px" onclick="slcMap(this,'http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}.png')" class="imgSlc">
+			<label>ESRI Light Gray</label>
+		</div>
+		<div>
+			<img src="./img/map/6.png" width="100px" onclick="slcMap(this,'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png')" class="imgSlc">
+			<label>ESRI Imagery</label>
+		</div>
+		<div>
+			<img src="./img/map/7.png" width="100px" onclick="slcMap(this,'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}.png')" class="imgSlc">
+			<label>ESRI Topo</label>
+		</div>
+		<div>
+			<img src="./img/map/8.png" width="100px" onclick="slcMap(this,'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}')" class="imgSlc">
+			<label>Google Terrain</label>
+		</div>
+		<div>
+			<img src="./img/map/9.png" width="100px" onclick="slcMap(this,'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png')" class="imgSlc">
+			<label>Google Street Map</label>
+		</div>
+		<div>
+			<img src="./img/map/10.png" width="100px" onclick="slcMap(this,'http://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}')" class="imgSlc">
+			<label>Google Map</label>
+		</div>
+		<div>
+			<img src="./img/map/11.png" width="100px" onclick="slcMap(this,'https://tile.opentopomap.org/{z}/{x}/{y}.png')" class="imgSlc">
+			<label>Open Topo Map</label>
+		</div>
+  		<div>
+			<img src="./img/map/1.png" width="100px" onclick="slcMap(this,'https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=atdoiSMFutOTW2mSNsCa')" class="imgSlc">
+			<label>Google street map</label>
+		</div>
+	</div>
+	<div class="page">
+		<div class="map_web_page">
+			<div class="container-page">
+				<div class="fab">
+					<div>
+						<button type="button" name="button" onclick="zoom_control(1)"><i class="fa fa-plus"></i></button>
+						<button type="button" name="button" onclick="zoom_control(-1)"><i class="fa fa-minus"></i></i></button></button>
+						<br>
+						<button type="button" name="button" onclick="startAdd()"><i class="fa fa-thumb-tack"></i></button>
+						<button type="button" name="button" onclick="clearDistance()" class="distance-ui" style="display:none"><i class="fa fa-trash-o"></i></button>
+						<button type="button" name="button" onclick="clearDistance()" class="distance-ui" style="display:none"><i class="fa fa-times-circle"></i></button>
+					</div>
+				</div>
+				<button onclick="toggleMenu()" class="open-fab">
+					<img src="./img/240px-OpenLayers_logo.svg.png" width="50px" height="50px">
+				</button>
+				<div class="menu-left">
+					<button onclick="toggleMenu()" class="close-menu"><i class="fa fa-remove"></i></button>
+
+					<button class="accordion"><img src="./img/basicinfo.png" class="sub-icon">ข้อมูลพื้นฐาน<i class="fa fa-sort-desc right-btn"></i></button>
+					<div class="panel" style="display:block;">
+						<div class="box-group">
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" checked="checked" onclick="action_panel(this,1)">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ขอบเขตลุ่มน้ำ</label>
+							</div>
+							<div class="sub-menu1">
+								<div class="pd-left">
+									<label class="container">ลุ่มน้ำประธาน 22 ลุ่มน้ำ
+									  <input type="checkbox" onchange="displayOnMapText('Basin22','http://localhost/mismun/json/Basin/Basin22.json',[['properties','MBASIN_T']],Basin22_name,'#17181E','MBASIN_T')" id="Basin22" class="item-group1">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ลุ่มน้ำมูล
+									  <input type="checkbox" checked="checked" onchange="displayOnMap('Basin','http://localhost/mismun/json/Basin/Basin.json',[['properties','Basin_Name_T']],'#17181E','ลุ่มน้ำ')" class="item-group1" id="Basin">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ลุ่มน้ำสาขา
+									  <input type="checkbox" onchange="displayOnMap('SubBasin','http://localhost/mismun/json/Basin/SubBasin.json',[['properties','SubBasin_Name_T']],'#17181E')" class="item-group1" id="SubBasin">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+
+							<!-- -->
+							<div class="pd-left">
+								<label class="switch">
+			  						<input type="checkbox" onclick="action_panel(this,2)">
+			  						<span class="slider round"></span>
+								</label>
+								<label class="sub-text">การปกครอง</label>
+							</div>
+							
+							<div class="sub-menu2">
+								<div class="pd-left">
+									<label class="container">จังหวัด
+									  <input type="checkbox" onchange="displayOnMapText('Province','http://localhost/mismun/json/Admin/Province.json',[['properties','Province_Name_T']],provice_set,'#a00000','Province_Name_T')" class="item-group2" id="Province">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">อำเภอ
+									  <input type="checkbox" onchange="displayOnMap('District','http://localhost/mismun/json//Admin/District.json',[['properties','District_Name_T'],['properties','Province_Name_T']],'#a00000')" class="item-group2" id="District">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ตำบล
+									  <input type="checkbox" onchange="displayOnMap('SubDistrict','http://localhost/mismun/json//Admin/SubDistrict.json',[['none']],'#a00000')" class="item-group2" id="SubDistrict">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เทศบาล
+									  <input type="checkbox" onchange="displayOnMap('SubDistrict_Location','http://localhost/mismun/json//Admin/Local_Admin.json',[['properties','Local_Admin_Name_T']],'#a00000')" class="item-group2" id="SubDistrict_Location">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">หมู่บ้าน
+									  <input type="checkbox" onchange="displayOnMapIcon('Village','http://localhost/mismun/json//Admin/Village.geojson','http://localhost/mismun/img/village.png',[['properties','v_name_t']],'#a00000','หมู่บ้าน')" class="item-group2" id="Village">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+							<!-- -->
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onclick="action_panel(this,3)">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">เส้นทางคมนาคม</label>
+							</div>
+							<div class="sub-menu3">
+								<div class="pd-left">
+									<label class="container">ถนน
+									  <input type="checkbox" onchange="displayOnMap('Road','http://localhost/mismun/json/Trans/Road.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Road">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ทางรถไฟ
+									  <input type="checkbox" onchange="displayOnMap('Railway','http://localhost/mismun/json/Trans/Railway.json',[['properties','NAME_T']],'#008000','ลุ่มน้ำ')" class="item-group2" id="Railway">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">สถานีคมนาคม
+									  <input type="checkbox" onchange="displayOnMapIcon('Trans_Station','http://localhost/mismun/json/Trans/Trans_Station.geojson','http://localhost/mismun/img/transtation.png',[['properties','TFac_PT_Name_T']])" id="Trans_Station" class="item-group2" >
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<button class="accordion"><img src="./img/natural.png" class="sub-icon">ทรัพยากรธรรมชาติ<i class="fa fa-sort-desc right-btn"></i></button>
+					<div class="panel">
+						<div class="box-group">
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMapBg('Stream','http://localhost/mismun/json/Hydrology/Stream.json',[['properties','WLS_NAME']],'#a3ff9b','#a3ff9b')" id="Stream" class="item-group2">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ลำน้ำ</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMapIcon('River_Distance','http://localhost/mismun/json/Hydrology/River_Distance.json','https://upload.wikimedia.org/wikipedia/commons/9/91/Spain_traffic_signal_r100.svg',[['properties','River_Name']])" class="item-group2" id="River_Distance">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">กิโลเมตรของลำน้ำ</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMap('Waterbody','http://localhost/mismun/json/Hydrology/Waterbody.json',[['none']],'#008000')" class="item-group2" id="Waterbody">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">แหล่งน้ำ</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onclick="action_panel(this,4)">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ป่าไม้</label>
+							</div>
+							<div class="sub-menu4">
+								<div class="pd-left">
+									<label class="container">พื้นที่ป่าไม้ <div class="box-filp" style='background: #a3ff9b;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('Forest','http://localhost/mismun/json/Forest/Forest.json',[['properties','WLS_NAME']],'#a3ff9b','#a3ff9b')" id="Forest" class="item-group1">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">พื้นที่ป่าบุ่ง ป่าทาม <div class="box-filp" style='background: #00ffc5;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('FwSwamp','http://localhost/mismun/json/Forest/FwSwamp.json',[['properties','AMPHOE_T'],['none']],'#00ffc5','#00ffc5')" class="item-group1" id="FwSwamp">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">อุทยานแห่งชาติ <div class="box-filp" style='background: #43a072;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('NPRK','http://localhost/mismun/json/Forest/NPRK.json',[['properties','NPRK_Name_T']],'#43a072','#43a072','อุทยานแห่งชาติ')" class="item-group1" id="NPRK">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เขตรักษาพันธุ์สัตว์ป่า <div class="box-filp" style='background: #ad9fd0;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('WLDS','http://localhost/mismun/json/Forest/WLDS.json',[['properties','WLDS_Name_T']],'#ad9fd0','#ad9fd0')" class="item-group1" id="WLDS">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เขตห้ามล่าสัตว์ป่า <div class="box-filp" style='background: #a98778;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('NHTA','http://localhost/mismun/json/Forest/NHTA.json',[['properties','NHTA_Name_T']],'#a98778','#a98778')" class="item-group1" id="NHTA">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เขตป่าสงวนแห่งชาติ <div class="box-filp" style='background: #4696ae;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('NRF','http://localhost/mismun/json/Forest/NRF.json',[['properties','AMPHOE_T'],['properties','NRF_Name_T']],'#4696ae','#4696ae')" class="item-group1" id="NRF">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">วนอุทยาน  <div class="box-filp" style='background: #5c8533;'></div>
+									  <input type="checkbox" onchange="displayOnMapBg('PARK','http://localhost/mismun/json/Forest/PARK.json',[['properties','AMPHOE_T'],['properties','PROV_NAM_T']],'#5c8533','#5c8533')" class="item-group1" id="PARK">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMap('Wetland','http://localhost/mismun/json/Forest/Wetland.json',[['properties','Name']],'#008000')" class="item-group2" id="Wetland">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่ชุ่มน้ำ</label>
+							</div>
+						</div>
+					</div>
+
+					<button class="accordion"><img src="./img/risk.png" class="sub-icon">อุกทกภัย-ภัยแล้ง<i class="fa fa-sort-desc right-btn"></i></button>
+					<div class="panel">
+						<div class="box-group">
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,5);displayOnMapColor('Stream_Capacity','http://localhost/mismun/json/Hydrology/Stream_Capacity.json',[['properties','River_Capa']],['#ffff45','#d8fe8e','#6af22b','#2f6d12','#2f6d12','#f0972e','#f38fd5','#cb129c','#d01113','#620707'],[50,100,150,200,500,1000,1500,2000,3000,100000],'River_Capa');" class="item-group1" id="Stream_Capacity">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ความจุลำน้ำ</label>
+							</div>
+							<div class="sub-menu5">
+								<center>
+									<img src="http://localhost/mismun/img/legend/legend-Stream_Capacity.png" width="40%">
+								</center>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onclick="action_panel(this,6)">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่น้ำท่วมที่คาบอุบัติต่างๆ</label>
+							</div>
+							<div class="sub-menu6">
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 2 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr2','http://localhost/mismun/json/Flood/Flood_Tr2.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr2">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 5 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr5','http://localhost/mismun/json/Flood/Flood_Tr5.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr5">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 10 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr10','http://localhost/mismun/json/Flood/Flood_Tr10.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr10">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 25 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr25','http://localhost/mismun/json/Flood/Flood_Tr25.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr25">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 50 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr50','http://localhost/mismun/json/Flood/Flood_Tr50.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr50">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รอบการเกิด 100 ปี
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMap('FloodRisk','http://localhost/mismun/json/Risk/FloodRisk.json',[['none']],'#a00000')" class="item-group1" id="FloodRisk">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่เสี่ยงภัยน้ำท่วม</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onclick="action_panel(this,7)">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่น้ำท่วมปี 2548 - 2563</label>
+							</div>
+							<div class="sub-menu7">
+								<div class="pd-left">
+									<br>
+									<a>ข้อมูลจาก GISTDA</a>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2548
+									  <input type="checkbox" onchange="displayOnMapBg('Flood_Tr2','http://localhost/mismun/json/Flood/Flood_Tr2.json',[['none']],'#a00000','#a00000')" class="item-group2" id="Flood_Tr2">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2549
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr5','http://localhost/mismun/json/Flood/Flood_Tr5.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr5">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2550
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr10','http://localhost/mismun/json/Flood/Flood_Tr10.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr10">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2551
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr25','http://localhost/mismun/json/Flood/Flood_Tr25.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr25">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2552
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr50','http://localhost/mismun/json/Flood/Flood_Tr50.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr50">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2553
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2554
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2555
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2556
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2557
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2558
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2559
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2560
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2561
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2562
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ปี 2563
+									  <input type="checkbox" onchange="displayOnMap('Flood_Tr100','http://localhost/mismun/json/Flood/Flood_Tr100.json',[['none']],'#a00000','ลุ่มน้ำ')" class="item-group2" id="Flood_Tr100">
+									  <span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMap('Landslide','http://localhost/mismun/json/Risk/Landslide.json',[['none']],'#a00000')" class="item-group1" id="Landslide">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่เสี่ยงดินถล่มและน้ำป่าไหลหลาก</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="displayOnMapColor('Supply_Shortage','http://localhost/mismun/json/Risk/Supply_Shortage.json',[['properties','River_Capa']],['#ffff45','#d8fe8e','#6af22b','#2f6d12','#2f6d12','#f0972e','#f38fd5','#cb129c','#d01113','#620707'],[50,100,150,200,500,1000,1500,2000,3000,100000],'River_Capa');" class="item-group1" id="Supply_Shortage">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่เสี่ยงขาดแคลน<br>น้ำอุปโภค-บริโภคและอุตสาหกรรม</label>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่เสี่ยงขาดแคลนน้ำ<br>เพื่อการเกษตรนอกเขตชลประทาน</label>
+							</div>
+						</div>
+					</div>
+
+					<button class="accordion"><img src="./img/waterchart.png" class="sub-icon">ผังน้ำ<i class="fa fa-sort-desc right-btn"></i></button>
+					<div class="panel">
+						<div class="box-group">
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,8);displayOnMap('Waterway','http://localhost/mismun/json/WaterChart/Waterway.json',[['none']],'#55ff00');" class="item-group1" id="Waterway">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่ทางน้ำหลากบริเวณริมน้ำ (ลน.)</label>
+							</div>
+							<div class="sub-menu8">
+								<center>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #55ff00;">
+										</div>
+										<p style="display: inline-block;line-height: 30px;">(ลน.)</p>
+									</div>
+								</center>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,20);displayOnMapColor('Floodway','http://localhost/mismun/json/WaterChart/Floodway.json',[['properties','River_Capa']],['#bee8ff','#00b3ff'],['ลร1','ลร2'],'Type','poly',0.9,'#000',1);" class="item-group1" id="Floodway">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่ทางน้ำหลาก <br>เพื่อสงวนการรักษาการระบายน้ำ (ลร.)</label>
+							</div>
+							<div class="sub-menu20">
+								<center>
+									<div style="height: 20px;margin-bottom: 5px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #bee8ff;">
+										</div>
+										<p style="display: inline-block;line-height: 30px;">ประเภทที่ 1 (ลร.1)</p>
+									</div>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #00b3ff;">
+										</div>
+										<p style="display: inline-block;line-height: 30px;">ประเภทที่ 2 (ลร.2)</p>
+									</div>
+								</center>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,9);displayOnMap('FloodArea','http://localhost/mismun/json/WaterChart/FloodArea.json',[['none']],'#7ee3bf');" class="item-group1" id="FloodArea">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่น้ำนอง (น.)</label>
+							</div>
+							<div class="sub-menu9">
+								<center>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #7ee3bf;">
+										</div>
+										<p style="display: inline-block;line-height: 30px;">(น.)</p>
+									</div>
+								</center>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,10);displayOnMap('Lowland','http://localhost/mismun/json/WaterChart/Lowland.json',[['none']],'#edb649',);" class="item-group1" id="Lowland">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">พื้นที่ลุ่มต่ำ (ต.)</label>
+							</div>
+							<div class="sub-menu10">
+								<center>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #edb649;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">(ต.)</p>
+									</div>
+								</center>
+								<br>
+							</div>
+						</div>
+					</div>
+
+					<button class="accordion"><img src="./img/support.png" class="sub-icon">ข้อมูลสนับสนุน<i class="fa fa-sort-desc right-btn"></i></button>
+					<div class="panel">
+						<div class="box-group">
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,11);displayOnMap('Lowland','http://localhost/mismun/json/WaterChart/Lowland.json',[['none']],'#edb649',);" class="item-group1" id="Lowland">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">โครงการพัฒนาแหล่งน้ำ</label>
+							</div>
+							<div class="sub-menu11">
+								<div class="pd-left">
+									<label class="container">อ่างเก็บน้ำ
+										<input type="checkbox" onchange="displayOnMapBg('Flood_Tr2','http://localhost/mismun/json/Flood/Flood_Tr2.json',[['none']],'#a00000','#a00000')" class="item-group2" id="Flood_Tr2">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">โครงการชลประทาน
+										<input type="checkbox" onchange="displayOnMapIcon('Irr_Project','http://localhost/mismun/json/Support/Irr_Project.geojson','http://localhost/mismun/img/Irr_Project.png',[['properties','Irr_Project_Name_T']])" class="item-group2" id="Irr_Project">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">พื้นที่ชลประทาน
+										<input type="checkbox" onchange="displayOnMapBg('Flood_Tr2','http://localhost/mismun/json/Flood/Flood_Tr2.json',[['none']],'#a00000','#a00000')" class="item-group2" id="Flood_Tr2">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">สถานีสูบน้ำด้วยไฟฟ้า
+										<input type="checkbox" onchange="displayOnMapIcon('Irr_Pump','http://localhost/mismun/json/Support/Irr_Pump.geojson','http://localhost/mismun/img/Pump.png',[['none']])" class="item-group2" id="Irr_Pump">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">บ่อบาดาล
+										<input type="checkbox" onchange="displayOnMapIcon('Weir','http://localhost/mismun/json/Support/Weir.geojson','http://localhost/mismun/img/Well1.png',[['none']])" class="item-group2" id="Weir">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,12);displayOnMap('Lowland','http://localhost/mismun/json/WaterChart/Lowland.json',[['none']],'#edb649',);" class="item-group1" id="Lowland">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">สถานีตรวจวัด</label>
+							</div>
+							<div class="sub-menu12">
+								<div class="pd-left">
+									<label class="container">สถานีตรวจอากาศ
+										<input type="checkbox" onchange="displayOnMapIcon('Weather_Station','http://localhost/mismun/json/Support/Weather_Station.geojson','http://localhost/mismun/img/Weather_Station.png',[['properties','Irr_Project_Name_T']])" class="item-group2" id="Weather_Station">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">สถานีวัดน้ำฝน
+										<input type="checkbox" onchange="displayOnMapIcon('Rain_Station','http://localhost/mismun/json/Support/Rain_Station.geojson','http://localhost/mismun/img/Rain_Station.png',[['properties','Rain_Station_Name_T']])" class="item-group2" id="Rain_Station">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">สถานีวัดน้ำท่า
+										<input type="checkbox" onchange="displayOnMapIcon('Level_Station','http://localhost/mismun/json/Support/Level_Station.geojson','http://localhost/mismun/img/Level_Station.png',[['properties','Hydro_Station_Name_T']])" class="item-group2" id="Level_Station">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เส้นชั้นน้ำฝน
+										<input type="checkbox" onchange="displayOnMap('Isohyet','http://localhost/mismun/json/Support/Isohyet.json',[['none']],'#a00000')" class="item-group2" id="Isohyet">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,13);" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">การใช้ประโยชน์ที่ดิน</label>
+							</div>
+							<div class="sub-menu13">
+								<div class="pd-left" style="margin-left: 30px;">
+									<select class="select-prov" onchange="displayOnMapChange(this,'changeMapDisplay','LU')">
+										<option>เลือกจังหวัด</option>
+										<option>นครราชสีมา</option>
+										<option>บุรีรัมย์</option>
+										<option>สุรินทร์</option>
+										<option>ศรีสะเกษ</option>
+										<option>อุบลราชธานี</option>
+										<option>ลุ่มน้ำมูล</option>
+									</select>
+									<div style="height: 20px;">
+										<div class="sub-color" style="background: #f20000;">
+										</div>
+										<p class="sub-text-color">ชุมชนและสิ่งปลูกสร้าง (U)</p>
+									</div>
+									<div style="height: 20px;margin-top: 5px;">
+										<div class="sub-color" style="background: #c5a58e;">
+										</div>
+										<p class="sub-text-color">เกษตรกรรม (A)</p>
+									</div>
+									<div style="height: 20px;margin-top: 5px;">
+										<div class="sub-color" style="background: #017a00;">
+										</div>
+										<p class="sub-text-color">ป่าไม้ (F)</p>
+									</div>
+									<div style="height: 20px;margin-top: 5px;">
+										<div class="sub-color" style="background: #0000d6;">
+										</div>
+										<p class="sub-text-color">แหล่งน้ำ (W)</p>
+									</div>
+									<div style="height: 20px;margin-top: 5px;">
+										<div class="sub-color" style="background: #727272;">
+										</div>
+										<p class="sub-text-color">เบ็ดเตล็ด (M)</p>
+									</div>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,14);" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">สิ่งกีดขวางทางน้ำ</label>
+							</div>
+
+							
+							<div class="sub-menu14">
+								<div class="pd-left">
+									<label class="container">สะพาน
+										<input type="checkbox" onchange="displayOnMapIcon('Bridge','http://localhost/mismun/json/Support/Bridge.geojson','http://localhost/mismun/img/bridge.png',[['none']])" class="item-group2" id="Bridge">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เขื่อนทดน้ำ
+										<input type="checkbox" onchange="displayOnMapIcon('Diversion_Dam','http://localhost/mismun/json/Support/Diversion_Dam.geojson','http://localhost/mismun/img/diversion_dam.png',[['none']])" class="item-group2" id="Diversion_Dam">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ฝาย
+										<input type="checkbox" onchange="displayOnMapIcon('Weir1','http://localhost/mismun/json/Support/Weir.geojson','http://localhost/mismun/img/weir.png',[['none']])" class="item-group2" id="Weir1">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ประตูระบายน้ำ
+										<input type="checkbox" onchange="displayOnMapIcon('Regulator','http://localhost/mismun/json/Support/Regulator.geojson','http://localhost/mismun/img/regulator.png',[['none']])" class="item-group2" id="Regulator">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">คันป้องกันน้ำท่วม
+										<input type="checkbox" onchange="displayOnMapIcon('Polder','http://localhost/mismun/json/Support/Polder.geojson','http://localhost/mismun/img/polder.png',[['none']])" class="item-group2" id="Polder">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">เขื่อนป้องกันตลิ่ง
+										<input type="checkbox" onchange="displayOnMapIcon('Levee','http://localhost/mismun/json/Support/Levee.geojson','http://localhost/mismun/img/Level_Station.png',[['none']])" class="item-group2" id="Levee">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ทรบ.และท่อลอด
+										<input type="checkbox" onchange="displayOnMapIcon('Culvert','http://localhost/mismun/json/Support/Culvert.geojson','http://localhost/mismun/img/culvert.png',[['none']])" class="item-group2" id="Culvert">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">แสดงทั้งหมด
+										<input type="checkbox" onchange="displayOnMapIcon('Level_Station','http://localhost/mismun/json/Support/Level_Station.geojson','http://localhost/mismun/img/Level_Station.png',[['properties','Hydro_Station_Name_T']])" class="item-group2" id="Level_Station">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,15);" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">อุตสาหกรรม</label>
+							</div>
+							<div class="sub-menu15">
+								<div class="pd-left">
+									<label class="container">นิคมอุตสาหกรรม
+										<input type="checkbox" onchange="displayOnMap('Industrial','http://localhost/mismun/json/Support/Industrial.json',[['none']])" class="item-group2" id="Industrial">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">โรงงานอุตสาหกรรม
+										<input type="checkbox" onchange="displayOnMapIcon('Factory','http://localhost/mismun/json/Support/Factory.geojson','http://localhost/mismun/img/factory.png',[['none']])" class="item-group2" id="Factory">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,16);displayOnMapColor('Areabased','http://localhost/mismun/json/Support/Areabased.json',[['properties','River_Capa']],['#ff6a00','#5dff1c','#804c85','#19aff0','#ff0000'],['ด้านอื่นๆ','พื้นที่เสี่ยงน้ำเค็มรุกล้ำ','พื้นที่เสี่ยงภัยน้ำท่วมน้ำแล้ง','พื้นที่เสี่ยงภัยน้ำท่วม','พื้นที่เสี่ยงภัยแล้ง'],'TYPE1','poly',0.6,2);" class="item-group1" id="Areabased">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">Area Based</label>
+							</div>
+							<div class="sub-menu16">
+								<div class="pd-left">
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #ff0000;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">พื้นที่เสี่ยงภัยแล้ง</p>
+									</div>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #19aff0;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">พื้นที่เสี่ยงภัยน้ำท่วม</p>
+									</div>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #804c85;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">พื้นที่เสี่ยงภัยน้ำท่วมน้ำแล้ง</p>
+									</div>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #5dff1c;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">พื้นที่เสี่ยงน้ำเค็มรุกล้ำ</p>
+									</div>
+									<div style="height: 20px;">
+										<div style="width:30px;height: 20px;display: inline-block;background: #ff6a00;">
+										</div>
+										<p style="display: inline-block;line-height: 20px;height: 20px;">ด้านอื่นๆ</p>
+									</div>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,17);" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ผลสำรวจ</label>
+							</div>
+							<div class="sub-menu17">
+								<div class="pd-left">
+									<label class="container">หมุดหลักฐาน
+										<input type="checkbox" onchange="displayOnMapIconImg('MapControl','http://localhost/mismun/json/Support/MapControl.geojson','http://localhost/mismun/img/mapcontrol.png',[['properties','mapct']],'http://localhost/mismun/survey/mapct/','mapct',2,'หมุดหลักฐาน ')" class="item-group2" id="MapControl">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">รูปตัดขวางลำน้ำ
+										<input type="checkbox" onchange="displayOnMapIconImg('Cross_Section','http://localhost/mismun/json/Support/Cross_Section.geojson','http://localhost/mismun/img/xs.png',[['properties','Xsection_No']],'http://localhost/mismun/survey/xs/','Xsection_No',2,'รูปตัดน้ำที่ ')" class="item-group2" id="Cross_Section">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ความลึกแหล่งน้ำ
+										<input type="checkbox" onchange="displayOnMapIconImg('Waterdepth','http://localhost/mismun/json/Support/Waterdepth.geojson','http://localhost/mismun/img/waterdepth.png',[['properties','Xsection_No']],'http://localhost/mismun/survey/xs/','no',2,'รูปตัดน้ำที่ ')" class="item-group2" id="Waterdepth">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<div class="pd-left">
+									<label class="container">ระดับน้ำท่วมที่เคยเกิดขึ้น
+										<input type="checkbox" onchange="displayOnMapIconImg('Floodmark','http://localhost/mismun/json/Support/Floodmark.geojson','http://localhost/mismun/img/floodmark.png',[['none']],'http://localhost/mismun/survey/floodmark/','no',1)" class="item-group2" id="Floodmark">
+									<span class="checkmark"></span>
+									</label>
+								</div>
+								<br>
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,18);zoom_control(6);displayOnMap('Parcel','http://localhost/mismun/json/Support/Parcel.json',[['none']],'#edb649');" class="item-group1" id="Parcel">
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">แปลงที่ดิน</label>
+							</div>
+							<div class="sub-menu18">
+								
+							</div>
+							<div class="pd-left">
+								<label class="switch">
+		  							<input type="checkbox" onchange="action_panel(this,19);" class="item-group1" >
+		  							<span class="slider round"></span>
+								</label>
+								<label class="sub-text">ฝนคาดการณ์</label>
+							</div>
+							<div class="sub-menu19">
+								<center>
+									<img src=".\img\legend\legend-Rain_Prediction1.png">
+								</center>
+								<br>
+							</div>
+						</div>
+					</div>
+					<script>
+						var acc = document.getElementsByClassName("accordion");
+						var i;
+
+						for (i = 0; i < acc.length; i++) {
+						  acc[i].addEventListener("click", function() {
+						    var panel = this.nextElementSibling;
+						    if (panel.style.display === "block") {
+						      panel.style.display = "none";
+						    } else {
+						      panel.style.display = "block";
+						    }
+						  });
+						}
+
+						var acc = document.getElementsByClassName("accordion-group");
+						var i;
+
+						for (i = 0; i < acc.length; i++) {
+						    var panel = acc[i].nextElementSibling;
+						    console.log(acc[i].checked)
+						  if(acc[i].checked){
+							panel.style.display = "block";
+						}else{
+							panel.style.display = "none";
+							}
+						  acc[i].addEventListener("click", function() {
+						    
+						    if (panel.style.display === "block") {
+						      panel.style.display = "none";
+						    } else {
+						      panel.style.display = "block";
+						    }
+						  });
+						}
+					</script>
+
+					<!-- -->
+
+
+
+					<!-- -->
+
+				</div>
+
+			    <div class="content-right">
+			    	<div id="map">
+
+			    	</div>
+			    </div>
+
+			  </div>
+				<div class="latlng-fab">
+					<p id="latlng">0,0</p>
+				</div>
+		</div>
+	</div>
+
+
+
+	<!-- MAIN JS -->
+	<script src="./js/config.js"></script>
+	<script src="./js/main.js"></script>
+	<script src="./js/tool_map.js"></script>
+	<!------------------->
+	<!-- FUNCTION -->
+
+	<!-- 
+		displayOnMap(ชื่อไอดี, ลิ้งค์ url, ตำแหน่งข้อมูลที่ต้องโชว์, สี, ข้อความแสดง) ใช้สำหรับแสดงข้อมูลทั่วไป 
+
+		displayOnMapColor
+		(ชื่อไอดี, ลิ้งค์ url, ตำแหน่งข้อมูลที่ต้องโชว์, ชุดสี [รหัสสี,รหัสสี],เงื่อนไข [1,2],ค่าที่ต้องการนำมาเช็ค,ลักษณะการแสดง มี line กับ poly ,ความชัด,สีเส้นขอบ,ขนาด, ข้อความแสดง) 
+
+		displayOnMapBg(ชื่อไอดี, ลิ้งค์ url, ตำแหน่งข้อมูลที่ต้องโชว์, สี, สีพื้นหลัง, ข้อความแสดง)
+
+		displayOnMapData(ชื่อไอดี, ลิ้งค์ url, ตำแหน่งข้อมูลที่ต้องโชว์, สี, ข้อความแสดง, ตำแหน่งที่ต้องการเชื่อมข้อมูล)
+		
+		displayOnMapText(ชื่อไอดี, ลิ้งค์ url, ตำแหน่งข้อมูลที่ต้องโชว์,ชุดข้อมูล,สี,key ที่ต้องการแสดงข้อมูล)
+
+		displayOnMapIconImg(ชื่อไอดี, ลิ้งค์ url, ลิ้งค์ภาพ, ตำแหน่งข้อมูลที่ต้องโชว์,โฟรเดอร์ที่ดึงภาพ,key ที่ต้องการแสดงข้อมูล,จำนวนภาพ,ข้อความแสดง,ขนาดไอคอล [20,20])
+
+		displayOnMapIcon(ชื่อไอดี, ลิ้งค์ url, ลิ้งค์ภาพ, ตำแหน่งข้อมูลที่ต้องโชว์,ขนาดไอคอล [20,20])  
+	-->
+</body>
+</html>
